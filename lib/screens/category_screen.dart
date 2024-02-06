@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:meals_app_mobile/data/category_data.dart';
-import 'package:meals_app_mobile/screens/meals.dart';
+import 'package:meals_app_mobile/model/category_model.dart';
+import 'package:meals_app_mobile/screens/meals_screen.dart';
 import 'package:meals_app_mobile/widgets/category_list.dart';
 
-class Catergory extends StatelessWidget {
-  const Catergory({super.key});
+class CatergoryScreen extends StatelessWidget {
+  const CatergoryScreen({super.key});
 
-  void _selectedCategory(BuildContext context) {
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (BuildContext context) {
-      return const Meals(mealModel: [], title: 'Some Catergory');
-    }));
+  void _selectedCategory(BuildContext context, CategoryModel categoryModel) {
+    final filteredMeals = dummyMeals
+        .where((meal) => meal.categories.contains(categoryModel.id))
+        .toList();
+
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (BuildContext context) {
+        return MealsScreen(
+            mealModel: filteredMeals, title: categoryModel.title);
+      }),
+    );
   }
 
   @override
@@ -27,11 +34,11 @@ class Catergory extends StatelessWidget {
         children: [
           //for loop is alternate version of using map()
           //i.e dummyMealData.map((categoryList) => {CategoryList(categoryModel: categoryList)};)
-          for (final categorylist in dummyMealData)
+          for (final category in dummyMealData)
             CategoryList(
-              categoryModel: categorylist,
+              categoryModel: category,
               onSelectedCategory: () {
-                _selectedCategory(context);
+                _selectedCategory(context, category);
               },
             ),
         ],
