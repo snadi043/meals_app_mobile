@@ -22,27 +22,24 @@ class CatergoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Pick your Category')),
-      body: GridView(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          mainAxisSpacing: 20,
-          crossAxisSpacing: 20,
-          childAspectRatio: 3 / 2,
-        ),
-        children: [
-          //for loop is alternate version of using map()
-          //i.e dummyMealData.map((categoryList) => {CategoryList(categoryModel: categoryList)};)
-          for (final category in dummyMealData)
-            CategoryList(
-              categoryModel: category,
-              onSelectedCategory: () {
-                _selectedCategory(context, category);
-              },
-            ),
-        ],
+    return GridView(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        mainAxisSpacing: 20,
+        crossAxisSpacing: 20,
+        childAspectRatio: 3 / 2,
       ),
+      children: [
+        //for loop is alternate version of using map()
+        //i.e dummyMealData.map((categoryList) => {CategoryList(categoryModel: categoryList)};)
+        for (final category in dummyMealData)
+          CategoryList(
+            categoryModel: category,
+            onSelectedCategory: () {
+              _selectedCategory(context, category);
+            },
+          ),
+      ],
     );
   }
 }
