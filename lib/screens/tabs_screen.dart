@@ -54,11 +54,18 @@ class _TabsScreen extends State<TabsScreen> {
       );
     }
 
+    onSelectScreen(String identifier) {
+      if (identifier == 'filter') {
+      } else {
+        Navigator.of(context).pop();
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(activePageTitle),
       ),
-      drawer: const MainDrawer(),
+      drawer: MainDrawer(screenSelect: onSelectScreen),
       body: activeScreenPage,
       bottomNavigationBar: BottomNavigationBar(
         onTap: selectedTabScreens,
