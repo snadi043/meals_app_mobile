@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:meals_app_mobile/data/category_data.dart';
 import 'package:meals_app_mobile/model/meal_model.dart';
 import 'package:meals_app_mobile/screens/category_screen.dart';
 import 'package:meals_app_mobile/screens/filters_screen.dart';
 import 'package:meals_app_mobile/screens/meals_screen.dart';
 import 'package:meals_app_mobile/widgets/main_drawer.dart';
+
+const kInitialFilters = {
+  Filter.glutenFree: false,
+  Filter.lactoseFree: false,
+  Filter.onlyVegan: false,
+  Filter.onlyVegetarian: false,
+};
 
 class TabsScreen extends StatefulWidget {
   const TabsScreen({super.key});
@@ -14,6 +22,7 @@ class TabsScreen extends StatefulWidget {
 
 class _TabsScreen extends State<TabsScreen> {
   int activeScreenIndex = 0;
+  Map<Filter, bool> _selectedFilters = kInitialFilters;
   final List<MealsModel> favoriteMeals = [];
   void _showInfoMessage(String message) {
     ScaffoldMessenger.of(context).clearSnackBars();
@@ -43,9 +52,27 @@ class _TabsScreen extends State<TabsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final availableMeals = dummyMeals.where((mealModel) {
+      if (_selectedFilters[Filter.glutenFree]! && !mealModel.isGlutenFree) {
+        return false;
+      }
+      if (_selectedFilters[Filter.lactoseFree]! && !mealModel.isLactoseFree) {
+        return false;
+      }
+      if (_selectedFilters[Filter.onlyVegan]! && !mealModel.isVegan) {
+        return false;
+      }
+      if (_selectedFilters[Filter.onlyVegetarian]! && !mealModel.isVegetarian) {
+        return false;
+      }
+      return true;
+    }).toList();
+
     var activePageTitle = 'Categories';
-    Widget activeScreenPage =
-        CatergoryScreen(toggleFavorite: _toggleFavoriteMealsStatus);
+    Widget activeScreenPage = CatergoryScreen(
+      toggleFavorite: _toggleFavoriteMealsStatus,
+      availableMeals: availableMeals,
+    );
 
     if (activeScreenIndex == 1) {
       activePageTitle = 'Your Favorites';
@@ -55,12 +82,18 @@ class _TabsScreen extends State<TabsScreen> {
       );
     }
 
-    onSelectScreen(String identifier) {
+    void onSelectScreen(String identifier) async {
       Navigator.of(context).pop();
       if (identifier == 'filters') {
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (ctx) => const FiltersScreen(),
+        final result = await Navigator.of(context)
+            .push<Map<Filter, bool>>(MaterialPageRoute(
+          builder: (ctx) => FiltersScreen(
+            currentFilters: _selectedFilters,
+          ),
         ));
+        setState(() {
+          _selectedFilters = result ?? kInitialFilters;
+        });
       }
     }
 
