@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:meals_app_mobile/screens/tabs_screen.dart';
 
@@ -11,7 +12,7 @@ final appTheme = ThemeData(
   textTheme: GoogleFonts.latoTextTheme(),
 );
 void main() {
-  runApp(const MealsAppMobile());
+  runApp(const ProviderScope(child: MealsAppMobile()));
 }
 
 class MealsAppMobile extends StatelessWidget {
