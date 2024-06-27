@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:meals_app_mobile/model/meal_model.dart';
 import 'package:meals_app_mobile/screens/category_screen.dart';
 import 'package:meals_app_mobile/screens/filters_screen.dart';
 import 'package:meals_app_mobile/screens/meals_screen.dart';
 import 'package:meals_app_mobile/widgets/main_drawer.dart';
 import 'package:meals_app_mobile/providers/meals_provider.dart';
+import 'package:meals_app_mobile/providers/favorites_provider.dart';
+
+import 'package:meals_app_mobile/providers/filter_provider.dart';
 
 const kInitialFilters = {
   Filter.glutenFree: false,
@@ -24,26 +26,7 @@ class TabsScreen extends ConsumerStatefulWidget {
 class _TabsScreen extends ConsumerState<TabsScreen> {
   int activeScreenIndex = 0;
   Map<Filter, bool> _selectedFilters = kInitialFilters;
-  final List<MealsModel> favoriteMeals = [];
-  void _showInfoMessage(String message) {
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(message)));
-  }
-
-  void _toggleFavoriteMealsStatus(MealsModel mealsModel) {
-    if (favoriteMeals.contains(mealsModel)) {
-      setState(() {
-        favoriteMeals.remove(mealsModel);
-        _showInfoMessage("No longer a favorite meal");
-      });
-    } else {
-      setState(() {
-        favoriteMeals.add(mealsModel);
-        _showInfoMessage("Added to favorite meal");
-      });
-    }
-  }
+  void _showInfoMessage(String message) {}
 
   selectedTabScreens(int index) {
     setState(() {
@@ -72,15 +55,14 @@ class _TabsScreen extends ConsumerState<TabsScreen> {
 
     var activePageTitle = 'Categories';
     Widget activeScreenPage = CatergoryScreen(
-      toggleFavorite: _toggleFavoriteMealsStatus,
       availableMeals: availableMeals,
     );
 
     if (activeScreenIndex == 1) {
+      final favoriteMeals = ref.watch(favoriteMealsProvider);
       activePageTitle = 'Your Favorites';
       activeScreenPage = MealsScreen(
         mealModel: favoriteMeals,
-        toggleFavorite: _toggleFavoriteMealsStatus,
       );
     }
 
