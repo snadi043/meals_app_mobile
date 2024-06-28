@@ -26,7 +26,6 @@ class TabsScreen extends ConsumerStatefulWidget {
 class _TabsScreen extends ConsumerState<TabsScreen> {
   int activeScreenIndex = 0;
   Map<Filter, bool> _selectedFilters = kInitialFilters;
-  void _showInfoMessage(String message) {}
 
   selectedTabScreens(int index) {
     setState(() {
