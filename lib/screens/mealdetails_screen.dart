@@ -13,6 +13,10 @@ class MealDetailsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final favoriteMeals = ref.watch(favoriteMealsProvider);
+
+    final isFavorite = favoriteMeals.contains(mealsModel);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(mealsModel.title),
@@ -28,7 +32,16 @@ class MealDetailsScreen extends ConsumerWidget {
                       ? 'Meal added to favorite'
                       : 'Meal removed from favorite')));
             },
-            icon: const Icon(Icons.favorite),
+            icon: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 30),
+              transitionBuilder: (child, animation) {
+                return RotationTransition(
+                    turns: Tween<double>(begin: 0.5, end: 1).animate(animation),
+                    child: child);
+              },
+              child: Icon(isFavorite ? Icons.favorite : Icons.favorite_border,
+                  key: ValueKey(isFavorite)),
+            ),
           ),
         ],
       ),
